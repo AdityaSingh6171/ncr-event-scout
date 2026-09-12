@@ -12,20 +12,37 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom Design & Card Styling
+# Custom Design, Background & Typography CSS
 st.markdown("""
 <style>
+    /* Light canvas background with subtle modern micro-dots */
+    .stApp {
+        background-color: #f8fafc;
+        background-image: radial-gradient(#cbd5e1 0.85px, transparent 0.85px);
+        background-size: 20px 20px;
+        color: #0f172a;
+    }
+
+    /* Force text colors to remain crisp on light background */
+    h1, h2, h3, h4, p, span, label {
+        color: #0f172a !important;
+    }
+
+    /* Modern elevated white event cards */
     div[data-testid="stVerticalBlockBorderWrapper"] {
         border-radius: 14px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
         transition: transform 0.18s ease-in-out, box-shadow 0.18s ease-in-out;
         margin-bottom: 1rem;
-        background: #ffffff;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.09);
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1) !important;
     }
+
+    /* Category Badges */
     .badge {
         display: inline-block;
         padding: 4px 12px;
@@ -35,25 +52,25 @@ st.markdown("""
         letter-spacing: 0.02em;
         margin-right: 6px;
     }
-    .badge-comedy { background-color: #fef3c7; color: #92400e; }
-    .badge-music { background-color: #e0e7ff; color: #3730a3; }
-    .badge-art { background-color: #fce7f3; color: #9d174d; }
-    .badge-tech { background-color: #dcfce7; color: #166534; }
-    .badge-sports { background-color: #ffedd5; color: #9a3412; }
-    .badge-expo { background-color: #e0f2fe; color: #0369a1; }
+    .badge-comedy { background-color: #fef3c7; color: #92400e !important; }
+    .badge-music { background-color: #e0e7ff; color: #3730a3 !important; }
+    .badge-art { background-color: #fce7f3; color: #9d174d !important; }
+    .badge-tech { background-color: #dcfce7; color: #166534 !important; }
+    .badge-sports { background-color: #ffedd5; color: #9a3412 !important; }
+    .badge-expo { background-color: #e0f2fe; color: #0369a1 !important; }
 
     .hero-subtitle {
         font-size: 1.05rem;
-        color: #4b5563;
+        color: #475569 !important;
         line-height: 1.6;
         margin-bottom: 1.25rem;
     }
     .custom-footer {
         text-align: center;
         padding: 2.5rem 0 1rem 0;
-        color: #6b7280;
+        color: #64748b !important;
         font-size: 0.88rem;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid #e2e8f0;
         margin-top: 3rem;
     }
 </style>
