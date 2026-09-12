@@ -12,24 +12,30 @@ st.set_page_config(
     layout="wide"
 )
 
-# Modern UI Styling
+# Custom Design & Typography CSS
 st.markdown("""
 <style>
+    /* Card design & hover elevations */
     div[data-testid="stVerticalBlockBorderWrapper"] {
-        border-radius: 12px;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-        transition: transform 0.15s ease-in-out;
-        margin-bottom: 0.85rem;
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        transition: transform 0.18s ease-in-out, box-shadow 0.18s ease-in-out;
+        margin-bottom: 1rem;
+        background: #ffffff;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:hover {
         transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.09);
     }
+    
+    /* Category Badges */
     .badge {
         display: inline-block;
-        padding: 4px 10px;
+        padding: 4px 12px;
         border-radius: 20px;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         font-weight: 600;
+        letter-spacing: 0.02em;
         margin-right: 6px;
     }
     .badge-comedy { background-color: #fef3c7; color: #92400e; }
@@ -37,6 +43,24 @@ st.markdown("""
     .badge-art { background-color: #fce7f3; color: #9d174d; }
     .badge-tech { background-color: #dcfce7; color: #166534; }
     .badge-sports { background-color: #ffedd5; color: #9a3412; }
+
+    /* Custom Header Subtitle */
+    .hero-subtitle {
+        font-size: 1.05rem;
+        color: #4b5563;
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Footer styling */
+    .custom-footer {
+        text-align: center;
+        padding: 2.5rem 0 1rem 0;
+        color: #6b7280;
+        font-size: 0.88rem;
+        border-top: 1px solid #e5e7eb;
+        margin-top: 3rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -55,7 +79,7 @@ class EventItem(BaseModel):
 class EventResponse(BaseModel):
     events: List[EventItem]
 
-# ----------------- 2. Real Delhi NCR Events Database -----------------
+# ----------------- 2. Verified Delhi NCR Events -----------------
 VERIFIED_NCR_EVENTS = [
     EventItem(
         title="TOXIC - Abhishek Upmanyu Live",
@@ -129,7 +153,7 @@ VERIFIED_NCR_EVENTS = [
         venue="Jawaharlal Nehru Stadium (JLN)",
         region="South Delhi",
         schedule="Sun, Oct 18 • 6:15 AM",
-        price="₹1,200 (Registration)",
+        price="₹1,200 Entry",
         summary="Delhi's most prestigious annual marathon attracting elite world athletes, corporate squads, and running enthusiasts.",
         details="Starting and ending at the iconic JLN Stadium, the certified 21.1 km course loops past landmarks like India Gate and Kartavya Path, backed by international hydration stations and cheer zones.",
         booking_url="https://allevents.in/new-delhi/all"
@@ -153,7 +177,6 @@ def scrape_and_summarize():
     if not api_key or not api_key.startswith("AIza"):
         return VERIFIED_NCR_EVENTS
 
-    # Fetch live page text with a strict timeout
     page_text = ""
     try:
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
@@ -166,7 +189,6 @@ def scrape_and_summarize():
     except Exception:
         page_text = ""
 
-    # Generate structured updates via Gemini
     try:
         from google import genai
         from google.genai import types
@@ -194,16 +216,32 @@ def scrape_and_summarize():
     except Exception:
         return VERIFIED_NCR_EVENTS
 
-# ----------------- 4. UI Dashboard -----------------
-st.title("📍 Delhi NCR Live Event Scout & Summarizer")
-st.caption("Live event aggregator tracking stand-up comedy, live music, exhibitions, and cultural fests across Delhi, Gurugram, and Noida.")
+# ----------------- 4. UI Layout & Hero Banner -----------------
+st.title("📍 Delhi NCR Live Event Scout & AI Summarizer")
+st.markdown(
+    '<p class="hero-subtitle">'
+    'An automated, intelligent aggregator indexing public events across <b>Delhi, Gurugram, and Noida</b>. '
+    'Raw event listings are extracted via background web scraping and normalized using <b>Gemini 2.5 Flash</b> '
+    'into actionable, structured summaries.'
+    '</p>', 
+    unsafe_allow_html=True
+)
 
 @st.cache_data(ttl=1800)
 def load_events():
     return scrape_and_summarize()
 
-with st.spinner("Fetching verified events across Delhi NCR..."):
+with st.spinner("Scraping live sources and synchronizing listings..."):
     all_events = load_events()
+
+# Dynamic KPI Metric Counters
+m1, m2, m3, m4 = st.columns(4)
+m1.metric("Tracked Events", f"{len(all_events)} Active")
+m2.metric("Regions Covered", f"{len(set(e.region for e in all_events))} Zones")
+m3.metric("Primary Hubs", "Delhi • GGN • Noida")
+m4.metric("AI Engine", "Gemini 2.5 Flash")
+
+st.markdown("---")
 
 # Controls
 search_col, reg_col, cat_col = st.columns([2, 1, 1])
@@ -217,7 +255,7 @@ with cat_col:
     categories = ["All Categories"] + sorted(list({e.category for e in all_events}))
     selected_cat = st.selectbox("Category", categories)
 
-# Filter logic
+# Filtering logic
 filtered = [
     e for e in all_events
     if (selected_region == "All Regions" or e.region == selected_region)
@@ -239,8 +277,7 @@ def get_badge_class(cat: str) -> str:
     if "sport" in c or "marathon" in c: return "badge badge-sports"
     return "badge"
 
-st.divider()
-st.write(f"**Showing {len(filtered)} verified events**")
+st.write(f"Showing **{len(filtered)}** verified events matching your criteria:")
 
 # Display Event Cards
 for ev in filtered:
@@ -257,8 +294,21 @@ for ev in filtered:
             st.write(f"🏢 **Venue:** {ev.venue} &nbsp;|&nbsp; 🗓️ **Schedule:** {ev.schedule}")
             st.info(f"💡 **AI Summary:** {ev.summary}")
             
-            with st.expander("📖 View Full Event Details"):
+            with st.expander("📖 View Full Event Details & Timings"):
                 st.write(ev.details)
         with right:
             st.metric("Starting Price", ev.price)
-            st.markdown(f'<a href="{ev.booking_url}" target="_blank" style="text-decoration:none;"><button style="width:100%; background:#2563eb; color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:600; cursor:pointer; margin-top:8px;">🎟️ Book Tickets</button></a>', unsafe_allow_html=True)
+            st.markdown(
+                f'<a href="{ev.booking_url}" target="_blank" style="text-decoration:none;">'
+                f'<button style="width:100%; background:#2563eb; color:white; border:none; padding:10px 14px; border-radius:8px; font-weight:600; cursor:pointer; margin-top:8px;">🎟️ Book Tickets</button>'
+                f'</a>', 
+                unsafe_allow_html=True
+            )
+
+# ----------------- 5. Project Footer -----------------
+st.markdown("""
+<div class="custom-footer">
+    <b>Delhi NCR Live Event Scout</b> • Automated Web Scraping & AI Normalization Engine<br>
+    Built with Python, Streamlit, and Google Gemini API • Academic Submission Project
+</div>
+""", unsafe_allow_html=True)
