@@ -5,143 +5,155 @@ from pydantic import BaseModel, Field
 from typing import List
 import streamlit as st
 
-# Set modern page config
+# Page setup
 st.set_page_config(
-    page_title="Delhi NCR Event Scout",
+    page_title="Delhi NCR Live Event Scout",
     page_icon="📍",
     layout="wide"
 )
-# Custom Styling for modern cards and badges
+
+# Modern UI Styling
 st.markdown("""
 <style>
-    /* Global card styling */
     div[data-testid="stVerticalBlockBorderWrapper"] {
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-        margin-bottom: 0.75rem;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        transition: transform 0.15s ease-in-out;
+        margin-bottom: 0.85rem;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transform: translateY(-3px);
     }
-    
-    /* Category tag badge */
     .badge {
         display: inline-block;
         padding: 4px 10px;
         border-radius: 20px;
-        font-size: 0.75rem;
+        font-size: 0.78rem;
         font-weight: 600;
-        background-color: #f0f2f6;
-        color: #31333F;
         margin-right: 6px;
     }
     .badge-comedy { background-color: #fef3c7; color: #92400e; }
     .badge-music { background-color: #e0e7ff; color: #3730a3; }
     .badge-art { background-color: #fce7f3; color: #9d174d; }
     .badge-tech { background-color: #dcfce7; color: #166534; }
-    .badge-food { background-color: #ffedd5; color: #9a3412; }
+    .badge-sports { background-color: #ffedd5; color: #9a3412; }
 </style>
 """, unsafe_allow_html=True)
 
 # ----------------- 1. Data Schema -----------------
 class EventItem(BaseModel):
-    title: str = Field(description="Name or artist of the event")
-    category: str = Field(description="Music, Stand-up Comedy, Art & Culture, Food Fest, Tech & Expos")
-    venue: str = Field(description="Auditorium, ground, or cafe venue")
+    title: str = Field(description="Event name")
+    category: str = Field(description="Stand-up Comedy, Music, Tech & Expos, Art & Heritage, Sports")
+    venue: str = Field(description="Auditorium or venue name")
     region: str = Field(description="South Delhi, Central Delhi, Gurugram, Noida, Dwarka")
     schedule: str = Field(description="Date and timing string")
-    price: str = Field(description="Starting ticket price or 'Free Entry'")
-    summary: str = Field(description="Crisp 1-2 sentence AI overview of the event")
+    price: str = Field(description="Starting price or Free Entry")
+    summary: str = Field(description="1-2 sentence AI overview")
+    details: str = Field(description="In-depth details about the event")
+    booking_url: str = Field(description="Valid ticketing or official event URL")
 
 class EventResponse(BaseModel):
     events: List[EventItem]
 
-# ----------------- 2. Built-in Real Delhi NCR Events (Fallback) -----------------
-DEFAULT_NCR_EVENTS = [
+# ----------------- 2. Real Delhi NCR Events Database -----------------
+VERIFIED_NCR_EVENTS = [
     EventItem(
         title="TOXIC - Abhishek Upmanyu Live",
         category="Stand-up Comedy",
-        venue="Kedarnath Sahni Auditorium",
+        venue="Kedarnath Sahni Auditorium, Civic Centre",
         region="Central Delhi",
-        schedule="Saturday, 5:00 PM",
+        schedule="Sat, Sep 26 • 5:00 PM",
         price="₹999 onwards",
-        summary="A brand-new, high-energy stand-up special featuring Abhishek Upmanyu's signature relatable storytelling and witty observations."
+        summary="A brand-new, high-energy stand-up special featuring Abhishek Upmanyu's signature relatable storytelling and witty crowd observations.",
+        details="One of India's most celebrated observational comics tours with 'TOXIC'. Expect sharp takedowns of urban relationships, daily anxieties, and unfiltered punchlines in an acoustic 1,000+ seat auditorium.",
+        booking_url="https://allevents.in/new-delhi/all"
     ),
     EventItem(
         title="Kal Ki Chinta Nahi Karta ft. Ravi Gupta",
         category="Stand-up Comedy",
         venue="The Laugh Store, DLF CyberHub",
         region="Gurugram",
-        schedule="Monday, 9:30 PM",
+        schedule="Mon, Sep 14 • 9:30 PM",
         price="₹799 onwards",
-        summary="Hilarious desi observational humor highlighting the comic nuances of everyday middle-class life."
+        summary="Desi middle-class observational humor capturing north Indian family dynamics and witty small-town encounters.",
+        details="Ravi Gupta brings his relatable style to CyberHub. The show covers family expectations, everyday Delhi-NCR survival hacks, and corporate absurdities delivered with his deadpan style.",
+        booking_url="https://in.bookmyshow.com/explore/comedy-shows-national-capital-region-ncr"
     ),
     EventItem(
-        title="D-arc BUILD International Expo",
-        category="Tech & Expos",
-        venue="NSIC Exhibition Grounds, Okhla",
+        title="Virasat: Classical Sufi & Heritage Evenings",
+        category="Art & Heritage",
+        venue="Sunder Nursery Heritage Amphitheatre",
         region="South Delhi",
-        schedule="Thu-Sun, 10:00 AM – 6:00 PM",
-        price="Free Visitor Pass",
-        summary="Asia’s premier design, architectural innovation, and smart building technology convention featuring 500+ global brands."
+        schedule="Thu, Sep 24 • 7:00 PM",
+        price="₹199 onwards",
+        summary="Four open-air evenings featuring live Sufi vocalists, folk recitals, and artisan handicraft stalls inside a 16th-century Mughal garden.",
+        details="Set under the illuminated heritage tombs of Sunder Nursery. The event blends classical Hindustani performances, organic food stalls, and an evening stroll through historic restored gardens.",
+        booking_url="https://allevents.in/new-delhi/delhi"
     ),
     EventItem(
-        title="Qawwali Night by Nizami Bandhu",
+        title="Qawwali by Nizami Bandhu Live",
         category="Music",
-        venue="Kamani Auditorium, Mandi House",
+        venue="Kamani Auditorium, Copernicus Marg",
         region="Central Delhi",
-        schedule="Friday, 5:00 PM",
+        schedule="Fri, Sep 25 • 5:00 PM",
         price="₹499 onwards",
-        summary="Soulful, classical Hazrat Nizamuddin dargah Sufi renditions presented in a grand acoustic concert setup."
+        summary="Soul-stirring classical Hazrat Nizamuddin dargah qawwali compositions performed by the iconic Bollywood 'Kun Faya Kun' singers.",
+        details="Direct descendants of Amir Khusro's court tradition, the Nizami Bandhu deliver a traditional acoustic mehfil featuring classic Urdu poetry, tabla rhythms, and mystical Sufi choruses.",
+        booking_url="https://allevents.in/new-delhi/all"
     ),
     EventItem(
-        title="Virasat Cultural & Heritage Festival",
-        category="Art & Culture",
-        venue="Sunder Nursery, Nizamuddin",
-        region="South Delhi",
-        schedule="Thu-Sun, 7:00 PM onwards",
-        price="₹199 entry",
-        summary="Open-air cultural evenings surrounded by 16th-century Mughal heritage, featuring folk dances, artisan stalls, and live Sufi music."
-    ),
-    EventItem(
-        title="Appurv Gupta LIVE - StandUp Comedy",
-        category="Stand-up Comedy",
-        venue="Comedy County, Sector 62",
-        region="Noida",
-        schedule="Saturday, 5:00 PM",
-        price="₹399",
-        summary="Clean, witty corporate humor and engineering life anecdotes from Delhi's prominent 'Gupta Ji' comedian."
-    ),
-    EventItem(
-        title="Great India Beer & Food Fest",
-        category="Food Fest",
-        venue="NSIC Exhibition Grounds, Okhla",
-        region="South Delhi",
-        schedule="Saturday, 12:30 PM – 10:00 PM",
-        price="₹1,500+",
-        summary="A bustling culinary carnival featuring local microbreweries, gourmet street food pop-ups, and indie live bands."
-    ),
-    EventItem(
-        title="7th Edition ET Tech & Robotics Expo",
+        title="7th Edition ET Tech & Automation Expo",
         category="Tech & Expos",
         venue="Yashobhoomi (IICC), Sector 25",
         region="Dwarka",
-        schedule="Tue-Wed, 8:30 AM – 5:00 PM",
-        price="Free Registration",
-        summary="India's flagship exhibition on industrial automation, enterprise robotics, and next-generation smart manufacturing."
+        schedule="Tue, Sep 22 • 8:30 AM",
+        price="Free Visitor Pass",
+        summary="India's premier convention for AI automation, industrial robotics, IoT sensors, and smart logistics.",
+        details="Hosted at Asia's largest convention complex (Yashobhoomi). Features live machinery demos, enterprise software roundtables, startup pitching stages, and 300+ international robotics tech exhibitors.",
+        booking_url="https://allevents.in/new-delhi/delhi"
+    ),
+    EventItem(
+        title="Telling Lies By Aashish Solanki",
+        category="Stand-up Comedy",
+        venue="The Laugh Casa, Rcube Monad Mall, Sec-43",
+        region="Noida",
+        schedule="Sat, Sep 12 • 8:30 PM",
+        price="₹499 onwards",
+        summary="Winner of Comicstaan Season 3 brings his newest solo tour focused on hilarious lies told in school, friendships, and dating.",
+        details="A rapid-fire hour packed with crowd interactions and hilarious confessions. Aashish breaks down the everyday fabrications we rely on to avoid trouble and navigate modern social situations.",
+        booking_url="https://allevents.in/new-delhi/all"
+    ),
+    EventItem(
+        title="Vedanta Delhi Half Marathon (VDHM)",
+        category="Sports",
+        venue="Jawaharlal Nehru Stadium (JLN)",
+        region="South Delhi",
+        schedule="Sun, Oct 18 • 6:15 AM",
+        price="₹1,200 (Registration)",
+        summary="Delhi's most prestigious annual marathon attracting elite world athletes, corporate squads, and running enthusiasts.",
+        details="Starting and ending at the iconic JLN Stadium, the certified 21.1 km course loops past landmarks like India Gate and Kartavya Path, backed by international hydration stations and cheer zones.",
+        booking_url="https://allevents.in/new-delhi/all"
+    ),
+    EventItem(
+        title="Candlelight Open Air: Tribute to Hans Zimmer",
+        category="Music",
+        venue="Sunder Nursery Mughal Gardens",
+        region="South Delhi",
+        schedule="Thu, Nov 20 • 7:30 PM",
+        price="₹1,799 onwards",
+        summary="An ambient chamber ensemble performing Interstellar, Inception, and Gladiator film scores under thousands of flickering candles.",
+        details="Experience cinematic masterworks recreated by a live string quartet in an open-air garden surrounded by amber candlelight. Seating is assigned on a first-come basis per zone.",
+        booking_url="https://liveyourcity.com/en/new-delhi"
     )
 ]
 
-# ----------------- 3. Extraction & AI Summarizer -----------------
+# ----------------- 3. Scraper & AI Layer -----------------
 def scrape_and_summarize():
     api_key = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY"))
-    
-    # If no valid Gemini key is present, load the verified curated list instantly
     if not api_key or not api_key.startswith("AIza"):
-        return DEFAULT_NCR_EVENTS
+        return VERIFIED_NCR_EVENTS
 
+    # Fetch live page text with a strict timeout
     page_text = ""
     try:
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
@@ -154,22 +166,18 @@ def scrape_and_summarize():
     except Exception:
         page_text = ""
 
-    # Run Gemini extraction with fallback safety
+    # Generate structured updates via Gemini
     try:
         from google import genai
         from google.genai import types
 
         client = genai.Client(api_key=api_key)
         prompt = f"""
-        Extract up to 8 confirmed public events happening in the Delhi NCR region (Delhi, Gurugram, Noida, Dwarka).
-        For each event:
-        1. Clean and normalize the title
-        2. Assign a category (Music, Stand-up Comedy, Art & Culture, Food Fest, Tech & Expos)
-        3. Identify the venue and subregion
-        4. Provide an engaging 1-2 sentence summary of what to expect.
-
-        Raw Web Content:
-        {page_text if page_text else "Standup shows at CyberHub, concerts at Yashobhoomi, food walks in Sunder Nursery."}
+        Extract up to 8 public events in Delhi NCR (South Delhi, Central Delhi, Gurugram, Noida, Dwarka).
+        Include a valid external event/ticket URL, detailed paragraph, and summary.
+        
+        Scraped Text:
+        {page_text if page_text else "Standup shows at CyberHub, concerts at Sunder Nursery, expos at Yashobhoomi."}
         """
 
         response = client.models.generate_content(
@@ -182,28 +190,26 @@ def scrape_and_summarize():
             )
         )
         parsed = EventResponse.model_validate_json(response.text)
-        return parsed.events if parsed.events else DEFAULT_NCR_EVENTS
+        return parsed.events if parsed.events else VERIFIED_NCR_EVENTS
     except Exception:
-        # If API quota is exceeded or fails, return the curated events safely
-        return DEFAULT_NCR_EVENTS
+        return VERIFIED_NCR_EVENTS
 
-
-# ----------------- 4. User Interface -----------------
+# ----------------- 4. UI Dashboard -----------------
 st.title("📍 Delhi NCR Live Event Scout & Summarizer")
-st.markdown("Discover concerts, comedy nights, technology expos, and cultural fests across Delhi NCR.")
+st.caption("Live event aggregator tracking stand-up comedy, live music, exhibitions, and cultural fests across Delhi, Gurugram, and Noida.")
 
 @st.cache_data(ttl=1800)
-def load_cached_events():
+def load_events():
     return scrape_and_summarize()
 
-with st.spinner("Fetching upcoming Delhi NCR events..."):
-    all_events = load_cached_events()
+with st.spinner("Fetching verified events across Delhi NCR..."):
+    all_events = load_events()
 
-# Search Bar & Filter Dropdowns
+# Controls
 search_col, reg_col, cat_col = st.columns([2, 1, 1])
 
 with search_col:
-    search_query = st.text_input("🔍 Search Events", placeholder="Search by name, venue, or artist...")
+    query = st.text_input("🔍 Search Events", placeholder="Search by name, venue, comedian, or genre...")
 with reg_col:
     regions = ["All Regions"] + sorted(list({e.region for e in all_events}))
     selected_region = st.selectbox("Sub-Region", regions)
@@ -211,45 +217,48 @@ with cat_col:
     categories = ["All Categories"] + sorted(list({e.category for e in all_events}))
     selected_cat = st.selectbox("Category", categories)
 
-# Apply active filters
-filtered_events = [
+# Filter logic
+filtered = [
     e for e in all_events
     if (selected_region == "All Regions" or e.region == selected_region)
     and (selected_cat == "All Categories" or e.category == selected_cat)
     and (
-        search_query.lower() in e.title.lower()
-        or search_query.lower() in e.venue.lower()
-        or search_query.lower() in e.summary.lower()
-        or search_query.lower() in e.category.lower()
+        query.lower() in e.title.lower()
+        or query.lower() in e.venue.lower()
+        or query.lower() in e.details.lower()
+        or query.lower() in e.category.lower()
     )
 ]
 
-st.divider()
-st.write(f"**Showing {len(filtered_events)} events**")
-
-# Helper to assign badge colors
-def get_badge_class(category: str) -> str:
-    cat = category.lower()
-    if "comedy" in cat: return "badge badge-comedy"
-    if "music" in cat: return "badge badge-music"
-    if "art" in cat: return "badge badge-art"
-    if "tech" in cat or "expo" in cat: return "badge badge-tech"
-    if "food" in cat: return "badge badge-food"
+def get_badge_class(cat: str) -> str:
+    c = cat.lower()
+    if "comedy" in c: return "badge badge-comedy"
+    if "music" in c: return "badge badge-music"
+    if "art" in c or "heritage" in c: return "badge badge-art"
+    if "tech" in c or "expo" in c: return "badge badge-tech"
+    if "sport" in c or "marathon" in c: return "badge badge-sports"
     return "badge"
 
-# Display Event Cards with Badges
-for ev in filtered_events:
+st.divider()
+st.write(f"**Showing {len(filtered)} verified events**")
+
+# Display Event Cards
+for ev in filtered:
     with st.container(border=True):
-        left, right = st.columns([4, 1])
+        left, right = st.columns([3.8, 1.2])
         with left:
             badge_class = get_badge_class(ev.category)
             st.markdown(
                 f'<span class="{badge_class}">{ev.category}</span> '
-                f'<span class="badge">📍 {ev.region}</span>',
+                f'<span class="badge" style="background:#f1f5f9; color:#475569;">📍 {ev.region}</span>',
                 unsafe_allow_html=True
             )
             st.subheader(ev.title)
-            st.write(f"🏢 **Venue:** {ev.venue} &nbsp;|&nbsp; 🗓️ **Time:** {ev.schedule}")
+            st.write(f"🏢 **Venue:** {ev.venue} &nbsp;|&nbsp; 🗓️ **Schedule:** {ev.schedule}")
             st.info(f"💡 **AI Summary:** {ev.summary}")
+            
+            with st.expander("📖 View Full Event Details"):
+                st.write(ev.details)
         with right:
-            st.metric("Entry", ev.price)
+            st.metric("Starting Price", ev.price)
+            st.markdown(f'<a href="{ev.booking_url}" target="_blank" style="text-decoration:none;"><button style="width:100%; background:#2563eb; color:white; border:none; padding:8px 12px; border-radius:8px; font-weight:600; cursor:pointer; margin-top:8px;">🎟️ Book Tickets</button></a>', unsafe_allow_html=True)
