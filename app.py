@@ -56,14 +56,16 @@ st.markdown("""
         border-top: 1px solid #e5e7eb;
         margin-top: 3rem;
     }
-    
+</style>
+""", unsafe_allow_html=True)
+
 # Custom Design, Background & Typography CSS
 st.markdown("""
 <style>
     /* Light canvas background with subtle modern micro-dots */
     .stApp {
         background-color: #f8fafc;
-        background-image: radial-gradient(#cbd5e1 0.85px, transparent 0.85px);
+        background-image: radial-gradient #cbd5e1 0.85px, transparent 0.85px);
         background-size: 20px 20px;
         color: #0f172a;
     }
