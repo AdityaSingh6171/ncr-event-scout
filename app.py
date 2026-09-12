@@ -384,7 +384,6 @@ for ev in filtered:
     f'</a>', 
     unsafe_allow_html=True
 )
-            )
 
 # Footer
 st.markdown("""
