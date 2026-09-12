@@ -12,65 +12,81 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom Design, Background & Typography CSS
+# Custom Gen-Z Aurora Dark Aesthetic CSS
 st.markdown("""
 <style>
-    /* Light canvas background with subtle modern micro-dots */
+    /* Dark canvas with subtle ambient neon aurora glows */
     .stApp {
-        background-color: #f8fafc;
-        background-image: radial-gradient(#cbd5e1 0.85px, transparent 0.85px);
-        background-size: 20px 20px;
-        color: #0f172a;
+        background-color: #0b0f19;
+        background-image: 
+            radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+            radial-gradient(at 85% 20%, rgba(236, 72, 153, 0.14) 0px, transparent 45%),
+            radial-gradient(at 50% 85%, rgba(56, 189, 248, 0.12) 0px, transparent 55%);
+        background-attachment: fixed;
+        color: #f8fafc;
     }
 
-    /* Force text colors to remain crisp on light background */
+    /* Headings & general text colors */
     h1, h2, h3, h4, p, span, label {
-        color: #0f172a !important;
+        color: #f8fafc !important;
     }
 
-    /* Modern elevated white event cards */
+    /* Sleek frosted glass cards with subtle border glow on hover */
     div[data-testid="stVerticalBlockBorderWrapper"] {
-        border-radius: 14px;
-        background: #ffffff !important;
-        border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
-        transition: transform 0.18s ease-in-out, box-shadow 0.18s ease-in-out;
-        margin-bottom: 1rem;
+        border-radius: 16px;
+        background: rgba(17, 24, 39, 0.65) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        margin-bottom: 1.1rem;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1) !important;
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.45) !important;
+        box-shadow: 0 12px 40px -8px rgba(99, 102, 241, 0.25) !important;
     }
 
-    /* Category Badges */
+    /* Vibrant Neon Category Badges */
     .badge {
         display: inline-block;
         padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.76rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
         font-weight: 600;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.03em;
         margin-right: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .badge-comedy { background-color: #fef3c7; color: #92400e !important; }
-    .badge-music { background-color: #e0e7ff; color: #3730a3 !important; }
-    .badge-art { background-color: #fce7f3; color: #9d174d !important; }
-    .badge-tech { background-color: #dcfce7; color: #166534 !important; }
-    .badge-sports { background-color: #ffedd5; color: #9a3412 !important; }
-    .badge-expo { background-color: #e0f2fe; color: #0369a1 !important; }
+    .badge-comedy { background: rgba(245, 158, 11, 0.15); color: #fbbf24 !important; border-color: rgba(245, 158, 11, 0.3); }
+    .badge-music { background: rgba(139, 92, 246, 0.15); color: #c084fc !important; border-color: rgba(139, 92, 246, 0.3); }
+    .badge-art { background: rgba(236, 72, 153, 0.15); color: #f472b6 !important; border-color: rgba(236, 72, 153, 0.3); }
+    .badge-tech { background: rgba(16, 185, 129, 0.15); color: #34d399 !important; border-color: rgba(16, 185, 129, 0.3); }
+    .badge-sports { background: rgba(249, 115, 22, 0.15); color: #fb923c !important; border-color: rgba(249, 115, 22, 0.3); }
+    .badge-expo { background: rgba(14, 165, 233, 0.15); color: #38bdf8 !important; border-color: rgba(14, 165, 233, 0.3); }
+
+    /* Summary callout box override */
+    div[data-testid="stAlert"] {
+        background: rgba(30, 41, 59, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        color: #e2e8f0 !important;
+        border-radius: 12px !important;
+    }
 
     .hero-subtitle {
         font-size: 1.05rem;
-        color: #475569 !important;
+        color: #94a3b8 !important;
         line-height: 1.6;
         margin-bottom: 1.25rem;
     }
+
     .custom-footer {
         text-align: center;
         padding: 2.5rem 0 1rem 0;
         color: #64748b !important;
         font-size: 0.88rem;
-        border-top: 1px solid #e2e8f0;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
         margin-top: 3rem;
     }
 </style>
