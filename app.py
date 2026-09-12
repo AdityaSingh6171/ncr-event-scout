@@ -379,10 +379,11 @@ for ev in filtered:
         with right:
             st.metric("Starting Price", ev.price)
             st.markdown(
-                f'<a href="{ev.booking_url}" target="_blank" style="text-decoration:none;">'
-                f'<button style="width:100%; background:#2563eb; color:white; border:none; padding:10px 14px; border-radius:8px; font-weight:600; cursor:pointer; margin-top:8px;">🎟️ View on AllEvents</button>'
-                f'</a>', 
-                unsafe_allow_html=True
+    f'<a href="{ev.booking_url}" target="_blank" style="text-decoration:none;">'
+    f'<button style="width:100%; background:#2563eb; color:white; border:none; padding:10px 14px; border-radius:8px; font-weight:600; cursor:pointer; margin-top:8px;">🎟️ Book Tickets</button>'
+    f'</a>', 
+    unsafe_allow_html=True
+)
             )
 
 # Footer
