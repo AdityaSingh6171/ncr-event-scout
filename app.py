@@ -235,11 +235,10 @@ with st.spinner("Scraping live sources and synchronizing listings..."):
     all_events = load_events()
 
 # Dynamic KPI Metric Counters
-m1, m2, m3, m4 = st.columns(4)
+m1, m2, m3 = st.columns(3)
 m1.metric("Tracked Events", f"{len(all_events)} Active")
 m2.metric("Regions Covered", f"{len(set(e.region for e in all_events))} Zones")
 m3.metric("Primary Hubs", "Delhi • GGN • Noida")
-m4.metric("AI Engine", "Gemini 2.5 Flash")
 
 st.markdown("---")
 
