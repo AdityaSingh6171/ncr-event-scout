@@ -401,10 +401,10 @@ for ev in filtered:
         with left:
             badge_class = get_badge_class(ev.category)
             st.markdown(
-                f'<span class="{badge_class}">{ev.category}</span> '
-                f'<span class="badge" style="background:#f1f5f9; color:#475569;">📍 {ev.region}</span>',
-                unsafe_allow_html=True
-            )
+    f'<span class="{badge_class}">{ev.category}</span> '
+    f'<span class="badge" style="background:rgba(56, 189, 248, 0.12); color:#38bdf8 !important; border:1px solid rgba(56, 189, 248, 0.35);">📍 {ev.region}</span>',
+    unsafe_allow_html=True
+)
             st.subheader(ev.title)
             st.write(f"🏢 **Venue:** {ev.venue} &nbsp;|&nbsp; 🗓️ **Schedule:** {ev.schedule}")
             st.info(f"💡 **AI Summary:** {ev.summary}")
