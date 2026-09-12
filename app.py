@@ -335,10 +335,8 @@ def scrape_and_summarize():
 # ----------------- 4. UI Layout & Controls -----------------
 st.title("📍 Delhi NCR Live Event Scout")
 st.markdown(
-    '<p class="hero-subtitle">'
-    'An automated aggregator indexing live public events across <b>Delhi, Gurugram, and Noida</b> from AllEvents.in. '
-    'Browse upcoming comedy specials, musical concerts, technology expos, and cultural fests.'
-    '</p>', 
+    f'<span class="{badge_class}">{ev.category}</span> '
+    f'<span class="badge" style="background:rgba(56, 189, 248, 0.12); color:#38bdf8 !important; border:1px solid rgba(56, 189, 248, 0.35);">📍 {ev.region}</span>',
     unsafe_allow_html=True
 )
 
