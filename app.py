@@ -11,6 +11,39 @@ st.set_page_config(
     page_icon="📍",
     layout="wide"
 )
+# Custom Styling for modern cards and badges
+st.markdown("""
+<style>
+    /* Global card styling */
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        margin-bottom: 0.75rem;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Category tag badge */
+    .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background-color: #f0f2f6;
+        color: #31333F;
+        margin-right: 6px;
+    }
+    .badge-comedy { background-color: #fef3c7; color: #92400e; }
+    .badge-music { background-color: #e0e7ff; color: #3730a3; }
+    .badge-art { background-color: #fce7f3; color: #9d174d; }
+    .badge-tech { background-color: #dcfce7; color: #166534; }
+    .badge-food { background-color: #ffedd5; color: #9a3412; }
+</style>
+""", unsafe_allow_html=True)
 
 # ----------------- 1. Data Schema -----------------
 class EventItem(BaseModel):
@@ -194,13 +227,29 @@ filtered_events = [
 st.divider()
 st.write(f"**Showing {len(filtered_events)} events**")
 
-# Display Event Cards
+# Helper to assign badge colors
+def get_badge_class(category: str) -> str:
+    cat = category.lower()
+    if "comedy" in cat: return "badge badge-comedy"
+    if "music" in cat: return "badge badge-music"
+    if "art" in cat: return "badge badge-art"
+    if "tech" in cat or "expo" in cat: return "badge badge-tech"
+    if "food" in cat: return "badge badge-food"
+    return "badge"
+
+# Display Event Cards with Badges
 for ev in filtered_events:
     with st.container(border=True):
         left, right = st.columns([4, 1])
         with left:
+            badge_class = get_badge_class(ev.category)
+            st.markdown(
+                f'<span class="{badge_class}">{ev.category}</span> '
+                f'<span class="badge">📍 {ev.region}</span>',
+                unsafe_allow_html=True
+            )
             st.subheader(ev.title)
-            st.write(f"🏷️ **{ev.category}** &nbsp;|&nbsp; 📍 **{ev.venue}** ({ev.region}) &nbsp;|&nbsp; 🗓️ **{ev.schedule}**")
+            st.write(f"🏢 **Venue:** {ev.venue} &nbsp;|&nbsp; 🗓️ **Time:** {ev.schedule}")
             st.info(f"💡 **AI Summary:** {ev.summary}")
         with right:
-            st.metric("Estimated Cost", ev.price)
+            st.metric("Entry", ev.price)
